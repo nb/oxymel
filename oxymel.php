@@ -44,7 +44,7 @@ class Oxymel {
 		return $this;
 	}
 
-	function up() {
+	function end() {
 		$this->go_up_next_call = true;
 		return $this;
 	}
@@ -171,21 +171,21 @@ class TestX extends PHPUnit_Framework_TestCase {
 		$this->a("<level0>
   <level1/>
 </level0>
-<level0/>", $this->x->level0->contains->level1->up->level0 );
+<level0/>", $this->x->level0->contains->level1->end->level0 );
 	}
 
 	function test_cdata() {
-		$this->a('<baba><![CDATA[content]]></baba>', $this->x->baba->contains->cdata('content')->up);
+		$this->a('<baba><![CDATA[content]]></baba>', $this->x->baba->contains->cdata('content')->end);
 	}
 
 	function test_raw() {
 		$this->a('<baba>
   <dyado/>
-</baba>', $this->x->baba->contains->raw('<dyado></dyado>')->up);
+</baba>', $this->x->baba->contains->raw('<dyado></dyado>')->end);
 	}
 
 	function x_test_only_up_error() {
-		$this->a('', $this->x->up );
+		$this->a('', $this->x->end );
 	}
 
 	function test_open_in_the_end() {
@@ -224,13 +224,13 @@ class TestX extends PHPUnit_Framework_TestCase {
   ->head->contains
     ->meta(array('charset' => 'utf-8'))
     ->title("How to seduce dragons")
-    ->up
+    ->end
   ->body(array('class' => 'story'))->contains
     ->h1('How to seduce dragons')
     ->h2('The fire manual')
     ->p('Once upon a time in a distant land there was an dragon.')
     ->p('In another very distant land')->contains
-		->text(' there was a very ')->strong('strong')->text(' warrrior')->up
+		->text(' there was a very ')->strong('strong')->text(' warrrior')->end
 	->p->contains->cdata('<b>sadad</b>');
 	}
 
