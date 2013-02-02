@@ -97,6 +97,11 @@ class Oxymel {
 		return $this;
 	}
 
+	function comment( $text ) {
+		$this->append( $this->dom->createComment( $text ) );
+		return $this;
+	}
+
 	function xml() {
 		$this->append( $this->dom->createProcessingInstruction( 'xml', 'version="1.0" encoding="UTF-8"' ) );
 		return $this;
