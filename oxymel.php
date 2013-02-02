@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 
 class Oxymel {
 	private $go_down_next_call = false;
-	private $go_up_next_call = false;
+	private $go_up_next_call = 0;
 	private $xml;
 	private $dom;
 	private $current_element;
@@ -45,7 +45,7 @@ class Oxymel {
 	}
 
 	function end() {
-		$this->go_up_next_call = true;
+		$this->go_up_next_call++;
 		return $this;
 	}
 
@@ -116,8 +116,11 @@ class Oxymel {
 		}
 		if ( $this->go_up_next_call ) {
 			//TODO: check if there is a parentNode
-			$this->current_element = $this->current_element->parentNode;
-			$this->go_up_next_call = false;
+			while ( $this->go_up_next_call ) {
+				$this->current_element = $this->current_element->parentNode;
+				$this->go_up_next_call--;
+			}
+			$this->go_up_next_call = 0;
 		}
 		$this->latest_inserted = $this->current_element->appendChild($element);
 	}
