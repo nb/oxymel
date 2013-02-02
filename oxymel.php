@@ -63,7 +63,7 @@ class Oxymel {
 		$is_close =  0 === strpos( $name, 'close_' );
 		$name = preg_replace("/^(open|close)_/", '', $name );
 
-		if ( $content )
+		if ( !is_null( $content ) )
 			$element = $this->dom->createElement( $name, $content );
 		else
 			$element = $this->dom->createElement( $name );
