@@ -137,6 +137,11 @@ class TestX extends PHPUnit_Framework_TestCase {
 		$this->x->baba->open_rss->contains->baba->end;
 	}
 
+	function test_nested_open_tags_should_be_indented() {
+		$this->a( "<baba>
+  <baba>", $this->x->open_baba->open_baba );
+	}
+
 	private function a($value, $x) {
 		$this->assertEquals( $value . "\n", $x->to_string());
 	}

@@ -10,6 +10,7 @@ class Oxymel {
 	private $go_up_on_next_element = 0;
 	private $nesting_level = 0;
 	private $contains_nesting_level = 0;
+	private $indentation= '  ';
 
 	public function __construct() {
 		$this->xml = '';
@@ -168,16 +169,29 @@ class Oxymel {
 	private function add_opening_tag_from_element( $element ) {
 		$this->xml .= $this->xml_from_dom();
 		$tag = $this->dom->saveXML($element);
-		$this->xml .= str_replace( '/>', '>', $tag ) . "\n";
+		$this->xml .= $this->indent( str_replace( '/>', '>', $tag ) . "\n", $this->nesting_level );
 		$this->nesting_level++;
 		$this->init_new_dom();
 	}
 
 	private function add_closing_tag_from_tag_name( $name ) {
 		$this->xml .= $this->xml_from_dom();
-		$this->xml .= "</$name>\n";
+		$this->xml .= $this->indent( "</$name>\n", $this->nesting_level );
 		$this->nesting_level--;
 		$this->init_new_dom();
+	}
+
+	private function indent( $string, $level ) {
+		if ( !$level ) {
+			return $string;
+		}
+		$lines = explode( "\n", $string );
+		foreach( $lines as &$line ) {
+			if ( !trim( $line ) )
+				continue;
+			$line = str_repeat( $this->indentation, $level ) . $line;
+		}
+		return implode( "\n", $lines );
 	}
 }
 
