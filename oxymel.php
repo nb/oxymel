@@ -5,7 +5,7 @@ class Oxymel {
 	private $xml;
 	private $dom;
 	private $current_element;
-	private $latest_inserted;
+	private $last_inserted;
 	private $go_deep_on_next_element = 0;
 	private $go_up_on_next_element = 0;
 	private $nesting_level = 0;
@@ -109,15 +109,15 @@ class Oxymel {
 	private function add_element_to_dom( $element ) {
 		$this->move_current_element_deep();
 		$this->move_current_element_up();
-		$this->latest_inserted = $this->current_element->appendChild($element);
+		$this->last_inserted = $this->current_element->appendChild($element);
 	}
 
 	private function move_current_element_deep() {
 		if ( $this->go_deep_on_next_element ) {
-			if ( !$this->latest_inserted ) {
+			if ( !$this->last_inserted ) {
 				throw new OxymelException( 'contains has been used before adding any tags' );
 			}
-			$this->current_element = $this->latest_inserted;
+			$this->current_element = $this->last_inserted;
 			$this->go_deep_on_next_element--;
 		}
 	}
@@ -149,7 +149,7 @@ class Oxymel {
 		$this->dom = new DOMDocument();
 		$this->dom->formatOutput = true;
 		$this->current_element = $this->dom;
-		$this->latest_inserted = null;
+		$this->last_inserted = null;
 	}
 
 	private function xml_from_dom() {
