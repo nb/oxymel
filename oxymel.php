@@ -6,8 +6,8 @@ class Oxymel {
 	private $dom;
 	private $current_element;
 	private $latest_inserted;
-	private $go_deep_next_call = 0;
-	private $go_up_next_call = 0;
+	private $go_deep_on_next_element = 0;
+	private $go_up_on_next_element = 0;
 	private $nesting_level = 0;
 	private $contains_nesting_level = 0;
 
@@ -32,10 +32,10 @@ class Oxymel {
 	public function contains() {
 		$this->contains_nesting_level++;
 		$this->nesting_level++;
-		if ( $this->go_deep_next_call ) {
+		if ( $this->go_deep_on_next_element ) {
 			throw new OxymelException( 'contains cannot be used consecutively more than once' );
 		}
-		$this->go_deep_next_call++;
+		$this->go_deep_on_next_element++;
 		return $this;
 	}
 
@@ -45,7 +45,7 @@ class Oxymel {
 		if ( $this->contains_nesting_level < 0 ) {
 			throw new OxymelException( 'end is used without a matching contains' );
 		}
-		$this->go_up_next_call++;
+		$this->go_up_on_next_element++;
 		return $this;
 	}
 
@@ -74,53 +74,61 @@ class Oxymel {
 			$this->nesting_level--;
 			$this->init_new_dom();
 		} else {
-			$this->append( $element );
+			$this->add_element_to_dom( $element );
 		}
 		return $this;
 	}
 
 	public function cdata( $text ) {
-		$this->append( $this->dom->createCDATASection( $text ) );
+		$this->add_element_to_dom( $this->dom->createCDATASection( $text ) );
 		return $this;
 	}
 
 	public function text( $text ) {
-		$this->append( $this->dom->createTextNode( $text ) );
+		$this->add_element_to_dom( $this->dom->createTextNode( $text ) );
 		return $this;
 	}
 
 	public function comment( $text ) {
-		$this->append( $this->dom->createComment( $text ) );
+		$this->add_element_to_dom( $this->dom->createComment( $text ) );
 		return $this;
 	}
 
 	public function xml() {
-		$this->append( $this->dom->createProcessingInstruction( 'xml', 'version="1.0" encoding="UTF-8"' ) );
+		$this->add_element_to_dom( $this->dom->createProcessingInstruction( 'xml', 'version="1.0" encoding="UTF-8"' ) );
 		return $this;
 	}
 
 	public function raw(  $raw_xml ) {
 		$fragment = $this->dom->createDocumentFragment();
 		$fragment->appendXML($raw_xml);
-		$this->append( $fragment );
+		$this->add_element_to_dom( $fragment );
 		return $this;
 	}
 
-	private function append( $element ) {
-		if ( $this->go_deep_next_call ) {
+	private function add_element_to_dom( $element ) {
+		$this->move_current_element_deep();
+		$this->move_current_element_up();
+		$this->latest_inserted = $this->current_element->appendChild($element);
+	}
+
+	private function move_current_element_deep() {
+		if ( $this->go_deep_on_next_element ) {
 			if ( !$this->latest_inserted ) {
 				throw new OxymelException( 'contains has been used before adding any tags' );
 			}
 			$this->current_element = $this->latest_inserted;
-			$this->go_deep_next_call--;
+			$this->go_deep_on_next_element--;
 		}
-		if ( $this->go_up_next_call ) {
-			while ( $this->go_up_next_call ) {
+	}
+
+	private function move_current_element_up() {
+		if ( $this->go_up_on_next_element ) {
+			while ( $this->go_up_on_next_element ) {
 				$this->current_element = $this->current_element->parentNode;
-				$this->go_up_next_call--;
+				$this->go_up_on_next_element--;
 			}
 		}
-		$this->latest_inserted = $this->current_element->appendChild($element);
 	}
 
 	private function get_content_and_attributes_from_tag_args( $content_or_attributes, $attributes ) {
