@@ -137,21 +137,6 @@ class TestX extends PHPUnit_Framework_TestCase {
 		$this->x->baba->open_rss->contains->baba->end;
 	}
 
-	function test_long() {
-		echo $this->x->xml->html->contains
-  ->head->contains
-    ->meta(array('charset' => 'utf-8'))
-    ->title("How to seduce dragons")
-    ->end
-  ->body(array('class' => 'story'))->contains
-    ->h1('How to seduce dragons')
-    ->h2('The fire manual')
-    ->p('Once upon a time in a distant land there was an dragon.')
-    ->p('In another very distant land')->contains
-		->text(' there was a very ')->strong('strong')->text(' warrrior')->end
-	->p->contains->cdata('<b>sadad</b>')->end->end->end->to_string();
-	}
-
 	private function a($value, $x) {
 		$this->assertEquals( $value . "\n", $x->to_string());
 	}
