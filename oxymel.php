@@ -2,12 +2,12 @@
 error_reporting(E_ALL);
 
 class Oxymel {
-	private $go_deep_next_call = 0;
-	private $go_up_next_call = 0;
 	private $xml;
 	private $dom;
 	private $current_element;
 	private $latest_inserted;
+	private $go_deep_next_call = 0;
+	private $go_up_next_call = 0;
 	private $nesting_level = 0;
 	private $contains_nesting_level = 0;
 
