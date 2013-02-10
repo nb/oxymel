@@ -149,6 +149,7 @@ class Oxymel {
 		$this->dom = new DOMDocument();
 		$this->dom->formatOutput = true;
 		$this->current_element = $this->dom;
+		$this->latest_inserted = null;
 	}
 
 	private function xml_from_dom() {

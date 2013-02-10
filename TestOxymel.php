@@ -132,6 +132,11 @@ class TestX extends PHPUnit_Framework_TestCase {
 		$this->x->contains->baba->end->end->baba;
 	}
 
+	function test_contains_after_newly_initialized_dom_should_error() {
+		$this->setExpectedException( 'OxymelException' );
+		$this->x->baba->open_rss->contains->baba->end;
+	}
+
 	function test_long() {
 		echo $this->x->xml->html->contains
   ->head->contains
