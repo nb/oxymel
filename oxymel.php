@@ -102,6 +102,9 @@ class Oxymel {
 		if ( $this->go_up_next_call ) {
 			//TODO: check if there is a parentNode
 			while ( $this->go_up_next_call ) {
+				if ( !$this->current_element->parentNode ) {
+					throw new OxymelException( 'end has been used without a matching contains' );
+				}
 				$this->current_element = $this->current_element->parentNode;
 				$this->go_up_next_call--;
 			}
@@ -138,4 +141,7 @@ class Oxymel {
 		}
 		return $xml;
 	}
+}
+
+class OxymelException extends Exception {
 }
