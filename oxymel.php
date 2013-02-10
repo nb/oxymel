@@ -8,7 +8,7 @@ class Oxymel {
 	private $dom;
 	private $current_element;
 
-	function __construct() {
+	public function __construct() {
 		$this->indentation_level = 0;
 		$this->xml = '';
 		$this->init_new_dom();
@@ -18,42 +18,26 @@ class Oxymel {
 		return $this->xml .= $this->xml_from_dom();
 	}
 
-	private function init_new_dom() {
-		unset( $this->dom, $this->current_element );
-		$this->dom = new DOMDocument();
-		$this->dom->formatOutput = true;
-		$this->current_element = $this->dom;
-	}
-
-	private function xml_from_dom() {
-		// TODO: indent every line
-		$xml = '';
-		foreach( $this->dom->childNodes as $child ) {
-			$xml .= $this->dom->saveXML( $child ) . "\n";
-		}
-		return $xml;
-	}
-
-	function __call( $name, $args ) {
+	public function __call( $name, $args ) {
 		array_unshift( $args, $name );
 		return call_user_func_array( array( $this, 'tag' ), $args );
 	}
 
-	function __get( $name ) {
+	public function __get( $name ) {
 		return $this->$name();
 	}
 
-	function contains() {
+	public function contains() {
 		$this->go_down_next_call = true;
 		return $this;
 	}
 
-	function end() {
+	public function end() {
 		$this->go_up_next_call++;
 		return $this;
 	}
 
-	function tag( $name, $content_or_attributes = null, $attributes = array() ) {
+	public function tag( $name, $content_or_attributes = null, $attributes = array() ) {
 		list( $content, $attributes ) = $this->get_content_and_attributes_from_tag_args( $content_or_attributes, $attributes );
 		$is_open =  0 === strpos( $name, 'open_' );
 		$is_close =  0 === strpos( $name, 'close_' );
@@ -83,27 +67,27 @@ class Oxymel {
 		return $this;
 	}
 
-	function cdata( $text ) {
+	public function cdata( $text ) {
 		$this->append( $this->dom->createCDATASection( $text ) );
 		return $this;
 	}
 
-	function text( $text ) {
+	public function text( $text ) {
 		$this->append( $this->dom->createTextNode( $text ) );
 		return $this;
 	}
 
-	function comment( $text ) {
+	public function comment( $text ) {
 		$this->append( $this->dom->createComment( $text ) );
 		return $this;
 	}
 
-	function xml() {
+	public function xml() {
 		$this->append( $this->dom->createProcessingInstruction( 'xml', 'version="1.0" encoding="UTF-8"' ) );
 		return $this;
 	}
 
-	function raw(  $raw_xml ) {
+	public function raw(  $raw_xml ) {
 		$fragment = $this->dom->createDocumentFragment();
 		$fragment->appendXML($raw_xml);
 		$this->append( $fragment );
@@ -137,5 +121,21 @@ class Oxymel {
 			$content = $content_or_attributes;
 		}
 		return array( $content, $attributes );
+	}
+
+	private function init_new_dom() {
+		unset( $this->dom, $this->current_element );
+		$this->dom = new DOMDocument();
+		$this->dom->formatOutput = true;
+		$this->current_element = $this->dom;
+	}
+
+	private function xml_from_dom() {
+		// TODO: indent every line
+		$xml = '';
+		foreach( $this->dom->childNodes as $child ) {
+			$xml .= $this->dom->saveXML( $child ) . "\n";
+		}
+		return $xml;
 	}
 }
