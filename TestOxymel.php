@@ -37,7 +37,7 @@ class TestX extends PHPUnit_Framework_TestCase {
 	function test_go_down() {
 		$this->a('<baba>
   <dyado/>
-</baba>', $this->x->baba->contains->dyado );
+</baba>', $this->x->baba->contains->dyado->end );
 	}
 
 	function test_go_down_and_up() {
@@ -89,7 +89,7 @@ class TestX extends PHPUnit_Framework_TestCase {
 	}
 
 	function test_baba() {
-		$this->a("<a>baba<x/></a>", $this->x->a('baba')->contains->x );
+		$this->a("<a>baba<x/></a>", $this->x->a('baba')->contains->x->end );
 	}
 
 	function test_comment() {
@@ -117,6 +117,21 @@ class TestX extends PHPUnit_Framework_TestCase {
 		$this->x->end->baba;
 	}
 
+	function test_leading_contains() {
+		$this->setExpectedException( 'OxymelException' );
+		$this->a( '<baba/>', $this->x->contains->baba );
+	}
+
+	function test_consecutive_contains_should_error() {
+		$this->setExpectedException( 'OxymelException' );
+		$this->x->baba->contains->contains->dyado->end->wink;
+	}
+
+	function test_end_without_mathcing_contains_but_with_enough_parents() {
+		$this->setExpectedException( 'OxymelException' );
+		$this->x->contains->baba->end->end->baba;
+	}
+
 	function test_long() {
 		echo $this->x->xml->html->contains
   ->head->contains
@@ -129,10 +144,10 @@ class TestX extends PHPUnit_Framework_TestCase {
     ->p('Once upon a time in a distant land there was an dragon.')
     ->p('In another very distant land')->contains
 		->text(' there was a very ')->strong('strong')->text(' warrrior')->end
-	->p->contains->cdata('<b>sadad</b>');
+	->p->contains->cdata('<b>sadad</b>')->end->end->end->to_string();
 	}
 
 	private function a($value, $x) {
-		$this->assertEquals( $value . "\n", (string)$x);
+		$this->assertEquals( $value . "\n", $x->to_string());
 	}
 }

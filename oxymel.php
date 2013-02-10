@@ -7,14 +7,16 @@ class Oxymel {
 	private $xml;
 	private $dom;
 	private $current_element;
+	private $latest_inserted;
+	private $nesting_level = 0;
+	private $contains_nesting_level = 0;
 
 	public function __construct() {
-		$this->indentation_level = 0;
 		$this->xml = '';
 		$this->init_new_dom();
 	}
 
-	public function __toString() {
+	public function to_string() {
 		return $this->xml .= $this->xml_from_dom();
 	}
 
@@ -28,11 +30,21 @@ class Oxymel {
 	}
 
 	public function contains() {
+		$this->contains_nesting_level++;
+		$this->nesting_level++;
+		if ( $this->go_down_next_call ) {
+			throw new OxymelException( 'contains cannot be used consecutively more than once' );
+		}
 		$this->go_down_next_call = true;
 		return $this;
 	}
 
 	public function end() {
+		$this->contains_nesting_level--;
+		$this->nesting_level;
+		if ( $this->contains_nesting_level < 0 ) {
+			throw new OxymelException( 'end is used without a matching contains' );
+		}
 		$this->go_up_next_call++;
 		return $this;
 	}
@@ -54,12 +66,12 @@ class Oxymel {
 			$this->xml .= $this->xml_from_dom();
 			$tag = $this->dom->saveXML($element);
 			$this->xml .= str_replace( '/>', '>', $tag ) . "\n";
-			$this->indentation_level++;
+			$this->nesting_level++;
 			$this->init_new_dom();
 		} elseif ( $is_close ) {
 			$this->xml .= $this->xml_from_dom();
 			$this->xml .= "</$name>\n";
-			$this->indentation_level++;
+			$this->nesting_level--;
 			$this->init_new_dom();
 		} else {
 			$this->append( $element );
@@ -96,15 +108,14 @@ class Oxymel {
 
 	private function append( $element ) {
 		if ( $this->go_down_next_call ) {
+			if ( !$this->latest_inserted ) {
+				throw new OxymelException( 'contains has been used before adding any tags' );
+			}
 			$this->current_element = $this->latest_inserted;
 			$this->go_down_next_call = false;
 		}
 		if ( $this->go_up_next_call ) {
-			//TODO: check if there is a parentNode
 			while ( $this->go_up_next_call ) {
-				if ( !$this->current_element->parentNode ) {
-					throw new OxymelException( 'end has been used without a matching contains' );
-				}
 				$this->current_element = $this->current_element->parentNode;
 				$this->go_up_next_call--;
 			}
@@ -134,6 +145,9 @@ class Oxymel {
 	}
 
 	private function xml_from_dom() {
+		if ( 0 !== $this->contains_nesting_level ) {
+			throw new OxymelException( 'contains and end calls do not match' );
+		}
 		// TODO: indent every line
 		$xml = '';
 		foreach( $this->dom->childNodes as $child ) {
