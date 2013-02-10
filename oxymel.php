@@ -51,31 +51,19 @@ class Oxymel {
 
 	public function tag( $name, $content_or_attributes = null, $attributes = array() ) {
 		list( $content, $attributes ) = $this->get_content_and_attributes_from_tag_args( $content_or_attributes, $attributes );
-		$is_open =  0 === strpos( $name, 'open_' );
-		$is_close =  0 === strpos( $name, 'close_' );
+		$is_opening =  0 === strpos( $name, 'open_' );
+		$is_closing =  0 === strpos( $name, 'close_' );
 		$name = preg_replace("/^(open|close)_/", '', $name );
 
-		if ( !is_null( $content ) )
-			$element = $this->dom->createElement( $name, $content );
-		else
-			$element = $this->dom->createElement( $name );
-		foreach( $attributes as $attribute_name => $attribute_value ) {
-			$element->setAttribute( $attribute_name, $attribute_value );
-		}
-		if ( $is_open ) {
-			$this->xml .= $this->xml_from_dom();
-			$tag = $this->dom->saveXML($element);
-			$this->xml .= str_replace( '/>', '>', $tag ) . "\n";
-			$this->nesting_level++;
-			$this->init_new_dom();
-		} elseif ( $is_close ) {
-			$this->xml .= $this->xml_from_dom();
-			$this->xml .= "</$name>\n";
-			$this->nesting_level--;
-			$this->init_new_dom();
-		} else {
+		$element = $this->create_element( $name, $content, $attributes );
+
+		if ( !$is_opening && !$is_closing )
 			$this->add_element_to_dom( $element );
-		}
+		elseif ( $is_opening )
+			$this->add_opening_tag_from_element( $element );
+		elseif ( $is_closing )
+			$this->add_closing_tag_from_tag_name( $name );
+
 		return $this;
 	}
 
@@ -162,6 +150,34 @@ class Oxymel {
 			$xml .= $this->dom->saveXML( $child ) . "\n";
 		}
 		return $xml;
+	}
+
+	private function create_element( $name, $content, $attributes ) {
+		if ( !is_null( $content ) )
+			$element = $this->dom->createElement( $name, $content );
+		else
+			$element = $this->dom->createElement( $name );
+
+		foreach( $attributes as $attribute_name => $attribute_value ) {
+			$element->setAttribute( $attribute_name, $attribute_value );
+		}
+
+		return $element;
+	}
+
+	private function add_opening_tag_from_element( $element ) {
+		$this->xml .= $this->xml_from_dom();
+		$tag = $this->dom->saveXML($element);
+		$this->xml .= str_replace( '/>', '>', $tag ) . "\n";
+		$this->nesting_level++;
+		$this->init_new_dom();
+	}
+
+	private function add_closing_tag_from_tag_name( $name ) {
+		$this->xml .= $this->xml_from_dom();
+		$this->xml .= "</$name>\n";
+		$this->nesting_level--;
+		$this->init_new_dom();
 	}
 }
 
