@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 
 class Oxymel {
-	private $go_down_next_call = 0;
+	private $go_deep_next_call = 0;
 	private $go_up_next_call = 0;
 	private $xml;
 	private $dom;
@@ -32,10 +32,10 @@ class Oxymel {
 	public function contains() {
 		$this->contains_nesting_level++;
 		$this->nesting_level++;
-		if ( $this->go_down_next_call ) {
+		if ( $this->go_deep_next_call ) {
 			throw new OxymelException( 'contains cannot be used consecutively more than once' );
 		}
-		$this->go_down_next_call++;
+		$this->go_deep_next_call++;
 		return $this;
 	}
 
@@ -107,12 +107,12 @@ class Oxymel {
 	}
 
 	private function append( $element ) {
-		if ( $this->go_down_next_call ) {
+		if ( $this->go_deep_next_call ) {
 			if ( !$this->latest_inserted ) {
 				throw new OxymelException( 'contains has been used before adding any tags' );
 			}
 			$this->current_element = $this->latest_inserted;
-			$this->go_down_next_call--;
+			$this->go_deep_next_call--;
 		}
 		if ( $this->go_up_next_call ) {
 			while ( $this->go_up_next_call ) {
