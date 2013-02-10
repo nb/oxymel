@@ -50,15 +50,7 @@ class Oxymel {
 	}
 
 	function tag( $name, $content_or_attributes = null, $attributes = array() ) {
-		$content = null;
-		if ( !$attributes ) {
-			if ( is_array( $content_or_attributes ) )
-				$attributes = $content_or_attributes;
-			else
-				$content = $content_or_attributes;
-		} else {
-			$content = $content_or_attributes;
-		}
+		list( $content, $attributes ) = $this->get_content_and_attributes_from_tag_args( $content_or_attributes, $attributes );
 		$is_open =  0 === strpos( $name, 'open_' );
 		$is_close =  0 === strpos( $name, 'close_' );
 		$name = preg_replace("/^(open|close)_/", '', $name );
@@ -129,6 +121,20 @@ class Oxymel {
 		}
 		$this->latest_inserted = $this->current_element->appendChild($element);
 	}
+
+	private function get_content_and_attributes_from_tag_args( $content_or_attributes, $attributes ) {
+		$content = null;
+		if ( !$attributes ) {
+			if ( is_array( $content_or_attributes ) )
+				$attributes = $content_or_attributes;
+			else
+				$content = $content_or_attributes;
+		} else {
+			$content = $content_or_attributes;
+		}
+		return array( $content, $attributes );
+	}
+
 
 	function __toString() {
 		return $this->xml .= $this->xml_from_dom();
