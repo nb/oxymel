@@ -42,7 +42,7 @@ class Oxymel {
 
 	public function end() {
 		$this->contains_nesting_level--;
-		$this->nesting_level;
+		$this->nesting_level--;
 		if ( $this->contains_nesting_level < 0 ) {
 			throw new OxymelException( 'end is used without a matching contains' );
 		}
