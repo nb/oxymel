@@ -119,7 +119,6 @@ class Oxymel {
 				$this->current_element = $this->current_element->parentNode;
 				$this->go_up_next_call--;
 			}
-			$this->go_up_next_call = 0;
 		}
 		$this->latest_inserted = $this->current_element->appendChild($element);
 	}
