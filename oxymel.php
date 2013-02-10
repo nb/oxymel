@@ -14,6 +14,10 @@ class Oxymel {
 		$this->init_new_dom();
 	}
 
+	public function __toString() {
+		return $this->xml .= $this->xml_from_dom();
+	}
+
 	private function init_new_dom() {
 		unset( $this->dom, $this->current_element );
 		$this->dom = new DOMDocument();
@@ -133,10 +137,5 @@ class Oxymel {
 			$content = $content_or_attributes;
 		}
 		return array( $content, $attributes );
-	}
-
-
-	function __toString() {
-		return $this->xml .= $this->xml_from_dom();
 	}
 }
