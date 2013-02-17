@@ -1,6 +1,4 @@
 <?php
-namespace Oxymel;
-
 class Oxymel {
 	private $xml;
 	private $dom;
@@ -135,7 +133,7 @@ class Oxymel {
 
 	private function init_new_dom() {
 		unset( $this->dom, $this->current_element );
-		$this->dom = new \DOMDocument();
+		$this->dom = new DOMDocument();
 		$this->dom->formatOutput = true;
 		$this->current_element = $this->dom;
 		$this->last_inserted = null;
@@ -195,5 +193,5 @@ class Oxymel {
 	}
 }
 
-class OxymelException extends \Exception {
+class OxymelException extends Exception {
 }

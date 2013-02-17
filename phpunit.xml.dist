@@ -3,7 +3,7 @@
 <phpunit colors="true">
     <testsuites>
         <testsuite name="Oxymel Test Suite">
-            <directory>tests/Oxymel/</directory>
+			<file>OxymelTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -1,9 +1,7 @@
 <?php
-namespace Oxymel;
+require_once __DIR__ . '/Oxymel.php';
 
-require_once __DIR__ . '/../../lib/Oxymel/Oxymel.php';
-
-class OxymelTest extends \PHPUnit_Framework_TestCase {
+class OxymelTest extends PHPUnit_Framework_TestCase {
 	function __construct() {
 		$this->x = new Oxymel;
 	}
@@ -116,27 +114,27 @@ class OxymelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function test_end_without_contains() {
-		$this->setExpectedException( 'Oxymel\OxymelException' );
+		$this->setExpectedException( 'OxymelException' );
 		$this->x->end->baba;
 	}
 
 	function test_leading_contains() {
-		$this->setExpectedException( 'Oxymel\OxymelException' );
+		$this->setExpectedException( 'OxymelException' );
 		$this->a( '<baba/>', $this->x->contains->baba );
 	}
 
 	function test_consecutive_contains_should_error() {
-		$this->setExpectedException( 'Oxymel\OxymelException' );
+		$this->setExpectedException( 'OxymelException' );
 		$this->x->baba->contains->contains->dyado->end->wink;
 	}
 
 	function test_end_without_mathcing_contains_but_with_enough_parents() {
-		$this->setExpectedException( 'Oxymel\OxymelException' );
+		$this->setExpectedException( 'OxymelException' );
 		$this->x->contains->baba->end->end->baba;
 	}
 
 	function test_contains_after_newly_initialized_dom_should_error() {
-		$this->setExpectedException( 'Oxymel\OxymelException' );
+		$this->setExpectedException( 'OxymelException' );
 		$this->x->baba->open_rss->contains->baba->end;
 	}
 
