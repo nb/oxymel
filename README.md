@@ -1,7 +1,5 @@
-oxymel
-======
-
-Oxymel is a library for building XML with a sweet interface.
+oxymel – a sweet XML builder
+============================
 
 ```php
 $oxymel = new Oxymel;
