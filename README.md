@@ -1,4 +1,4 @@
-oxymel – a sweet XML builder
+oxymel – a sweet XML builder [![Build Status](https://travis-ci.org/nb/oxymel.png)](https://travis-ci.org/nb/oxymel)
 ============================
 
 ```php
