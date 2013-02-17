@@ -118,7 +118,7 @@ class Oxymel {
 		}
 	}
 
-	private function get_content_and_attributes_from_tag_args( $content_or_attributes, $attributes ) {
+	private function get_content_and_attributes_from_tag_args( $content_or_attributes, array $attributes ) {
 		$content = null;
 		if ( !$attributes ) {
 			if ( is_array( $content_or_attributes ) )

@@ -32,7 +32,8 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 		$this->a('<baba a="b" c="d">content</baba>', $this->x->baba( 'content', array( 'a' => 'b', 'c' => 'd' ) ) );
 	}
 
-	function x_test_content_and_attributes_error() {
+	function test_content_and_attributes_error() {
+		$this->setExpectedException( 'PHPUnit_Framework_Error' );
 		$this->a('<baba a="b" c="d">content</baba>', $this->x->baba( array( 'a' => 'b', 'c' => 'd' ), 'content' ) );
 	}
 
