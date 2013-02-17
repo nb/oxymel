@@ -16,7 +16,7 @@ class Oxymel {
 	}
 
 	public function to_string() {
-		return $this->xml .= $this->xml_from_dom();
+		return $this->xml .= $this->indent( $this->xml_from_dom(), $this->nesting_level );
 	}
 
 	public function __call( $name, $args ) {
@@ -143,7 +143,6 @@ class Oxymel {
 		if ( 0 !== $this->contains_nesting_level ) {
 			throw new OxymelException( 'contains and end calls do not match' );
 		}
-		// TODO: indent every line
 		$xml = '';
 		foreach( $this->dom->childNodes as $child ) {
 			$xml .= $this->dom->saveXML( $child ) . "\n";
@@ -165,7 +164,7 @@ class Oxymel {
 	}
 
 	private function add_opening_tag_from_element( $element ) {
-		$this->xml .= $this->xml_from_dom();
+		$this->xml .= $this->indent( $this->xml_from_dom(), $this->nesting_level );
 		$tag = $this->dom->saveXML($element);
 		$this->xml .= $this->indent( str_replace( '/>', '>', $tag ) . "\n", $this->nesting_level );
 		$this->nesting_level++;
@@ -174,8 +173,12 @@ class Oxymel {
 
 	private function add_closing_tag_from_tag_name( $name ) {
 		$this->xml .= $this->xml_from_dom();
-		$this->xml .= $this->indent( "</$name>\n", $this->nesting_level );
 		$this->nesting_level--;
+		if ( $this->nesting_level < 0 ) {
+			$this->xml = $this->indent( $this->xml, -$this->nesting_level );
+			$this->nesting_level = 0;
+		}
+		$this->xml .= $this->indent( "</$name>\n", $this->nesting_level );
 		$this->init_new_dom();
 	}
 

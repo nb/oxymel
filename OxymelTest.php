@@ -5,6 +5,7 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 	function __construct() {
 		$this->x = new Oxymel;
 	}
+
 	function test_self_closing() {
 		$this->a('<baba/>', $this->x->baba);
 	}
@@ -75,7 +76,7 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 	function test_dom_open_dom() {
 		$this->a("<baba/>
 <newtag>
-<baba/>", $this->x->baba->open_newtag->baba );
+  <baba/>", $this->x->baba->open_newtag->baba );
 	}
 
 	function test_close_in_the_beginning() {
@@ -84,7 +85,7 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 	}
 
 	function test_dom_close_dom() {
-		$this->a("<baba/>
+		$this->a("  <baba/>
 </oldtag>
 <baba/>", $this->x->baba->close_oldtag->baba );
 	}
@@ -141,6 +142,22 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 	function test_nested_open_tags_should_be_indented() {
 		$this->a( "<baba>
   <baba>", $this->x->open_baba->open_baba );
+	}
+
+	function test_normal_xml_between_two_opening_tags_should_be_indented() {
+		$this->a( "<baba>
+  <baba/>
+  <baba>", $this->x->open_baba->baba->open_baba );
+	}
+
+	function test_normal_xml_after_opening_tag_should_be_indented() {
+		$this->a( "<baba>
+  <baba/>", $this->x->open_baba->baba );
+	}
+
+	function test_normal_xml_before_closing_tag_should_be_indented() {
+		$this->a( "  <baba/>
+</baba>", $this->x->baba->close_baba );
 	}
 
 	private function a($value, $x) {
