@@ -86,7 +86,18 @@ class Oxymel {
 		return $this;
 	}
 
+	public function oxymel( Oxymel $other ) {
+		foreach( $other->dom->childNodes as $child ) {
+			$child = $this->dom->importNode( $child, true );
+			$this->add_element_to_dom( $child );
+		}
+		return $this;
+	}
+
 	public function raw(  $raw_xml ) {
+		if ( !$raw_xml ) {
+			return $this;
+		}
 		$fragment = $this->dom->createDocumentFragment();
 		$fragment->appendXML($raw_xml);
 		$this->add_element_to_dom( $fragment );

@@ -60,6 +60,12 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 </baba>', $this->x->baba->contains->raw('<dyado></dyado>')->end);
 	}
 
+	function test_oxymel_ns() {
+		$oxymel = new Oxymel;
+		$oxymel->tag( 'wp:baba' );
+		$this->a( '<wp:baba/>', $this->x->oxymel( $oxymel ) );
+	}
+
 	function x_test_only_up_error() {
 		$this->a('', $this->x->end );
 	}
