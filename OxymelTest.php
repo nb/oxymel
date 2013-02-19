@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/Oxymel.php';
+require_once dirname( __FILE__ ) . '/Oxymel.php';
 
 class OxymelTest extends PHPUnit_Framework_TestCase {
 	function __construct() {
