@@ -54,6 +54,10 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 		$this->a('<baba><![CDATA[content]]></baba>', $this->x->baba->contains->cdata('content')->end);
 	}
 
+	function test_nested_cdata() {
+		$this->a( '<![CDATA[x]]]]><![CDATA[>]]>', $this->x->cdata( 'x]]>' ) );
+	}
+
 	function test_raw() {
 		$this->a('<baba>
   <dyado/>
