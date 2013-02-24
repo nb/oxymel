@@ -6,6 +6,10 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 		$this->x = new Oxymel;
 	}
 
+	function test_xml_adds_procesing_instrution_with_version_and_encoding() {
+		$this->a( '<?xml version="1.0" encoding="UTF-8"?>', $this->x->xml );
+	}
+
 	function test_self_closing() {
 		$this->a('<baba/>', $this->x->baba);
 	}
@@ -62,6 +66,10 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 		$this->a('<baba>
   <dyado/>
 </baba>', $this->x->baba->contains->raw('<dyado></dyado>')->end);
+	}
+
+	function test_raw_doesnt_do_anything_with_empty_arg() {
+		$this->a('<baba/>', $this->x->baba->raw( '' ) );
 	}
 
 	function test_oxymel_ns() {
@@ -169,6 +177,15 @@ class OxymelTest extends PHPUnit_Framework_TestCase {
 	function test_normal_xml_before_closing_tag_should_be_indented() {
 		$this->a( "  <baba/>
 </baba>", $this->x->baba->close_baba );
+	}
+
+	function test_text_should_escape_the_content_inside() {
+		$this->a( 'a &amp; b', $this->x->text( 'a & b' ) );
+	}
+
+	function test_dangling_contains_should_be_caught_in_the_end() {
+		$this->setExpectedException( 'OxymelException' );
+		$this->x->contains->to_string();
 	}
 
 	private function a($value, $x) {
