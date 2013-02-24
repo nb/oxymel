@@ -6,4 +6,9 @@
 			<file>OxymelTest.php</file>
         </testsuite>
     </testsuites>
+	<filter>
+		<whitelist>
+			<file>Oxymel.php</file>
+		</whitelist>
+	</filter>
 </phpunit>
